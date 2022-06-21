@@ -6,7 +6,7 @@ export const AccountSchema = new Schema(
     subs: [{ type: String, unique: true }],
     email: { type: String, lowercase: true, unique: true },
     name: { type: String, required: true },
-    picture: { type: String }
+    picture: { type: String, required: false }
   },
   { timestamps: true, toJSON: { virtuals: true } }
 )

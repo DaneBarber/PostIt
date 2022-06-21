@@ -1,5 +1,6 @@
 import { albumsService } from "../services/AlbumsService.js";
 import { picturesService } from "../services/PicturesService.js"
+import { albumMembersService } from "../services/AlbumMembersService.js";
 import BaseController from "../utils/BaseController.js"
 import { Auth0Provider } from "@bcwdev/auth0provider";
 import { logger } from "../utils/Logger.js";
@@ -11,10 +12,21 @@ export class AlbumsController extends BaseController {
     this.router
       .get("", this.getAll)
       .get("/:id", this.getById)
+      .get('/:albumId/albummembers', this.getAllMembersByAlbum)
       .get('/:id/pictures', this.getPicturesByAlbumId)
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post("", this.create)
+      .put("/:id", this.update)
       .delete("/:id", this.remove)
+  }
+  getAllMembersByAlbum(albumId, req, res, next) {
+
+    try {
+      let albumMembers = albumMembersService.getAllMembersByAlbum(albumId)
+      return res.send(albumMembers)
+    } catch (error) {
+      next(error)
+    }
   }
   async getAll(req, res, next) {
     try {
@@ -50,6 +62,17 @@ export class AlbumsController extends BaseController {
       next(error)
       logger.log(error)
     }
+  }
+  async update(req, res, next) {
+    try {
+      req.body.creatorId = req.userInfo.id
+      const album = await albumsService.update(req.params.id, req.body)
+      res.send(album)
+
+    } catch (error) {
+      next(error)
+    }
+
   }
   async remove(req, res, next) {
     try {

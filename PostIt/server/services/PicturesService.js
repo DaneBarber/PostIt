@@ -1,9 +1,11 @@
 import { dbContext } from "../db/DbContext.js";
 import { BadRequest, Forbidden } from '../utils/Errors.js'
+import { albumsService } from "../services/AlbumsService.js";
 
 class PicturesService {
 
   async getAll(query = {}) {
+    const album = await dbContext.Albums.findById(query.albumId)
     const pictures = await dbContext.Pictures.find(query)
     return pictures;
   }
