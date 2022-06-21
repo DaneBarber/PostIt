@@ -21,6 +21,7 @@ class AlbumsService {
       throw new Forbidden("Denied")
     }
     await album.remove()
+    return 'Album removed'
   }
 }
 
